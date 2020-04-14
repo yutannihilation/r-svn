@@ -45,6 +45,7 @@ jobs:
 
     - name: Check
       run: xvfb-run make check-all
+      id: check
 
     - name: Print failed tests
       if: failure()
@@ -86,6 +87,7 @@ jobs:
       run: |
         sed -i.bak 's/reg-packages.R//g' tests/Makefile.common
         make check-all
+      id: check
 
     - name: Print failed tests
       if: failure()
@@ -123,10 +125,11 @@ jobs:
       shell: bash
       run: sed -i.bak 's/rsync -rc/rsync -r/' tools/rsync-recommended
 
-    - name: Build and Check
+    - name: Check
       env:
         WIN: ${{matrix.WIN}}
       run: C:\rtools40\usr\bin\bash --login -c "$(cygpath ${env:GITHUB_WORKSPACE})/.github/workflows/rtools40-build.sh"
+      id: check
 
     - name: Print failed tests
       if: failure()
@@ -163,6 +166,7 @@ jobs:
 
     - name: Build Installer
       run: C:\rtools40\usr\bin\bash --login -c "$(cygpath ${env:GITHUB_WORKSPACE})/.github/workflows/rtools40-installer.sh"
+      id: check
 
     - name: Run Installer
       run: .\src\gnuwin32\installer\R-devel-win.exe /SILENT
