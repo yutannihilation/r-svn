@@ -3380,7 +3380,7 @@ add_dummies <- function(dir, Log)
                 ## The only -m flag which is reasonably portable is -mtune
                 machs <- setdiff(machs,
                                  c(except, c("-m", # not a flag
-                                             "-msse2", "-mfpmath=sse", # SAFE_FFLAGS
+                                             "-msse2", "-mfpmath=sse", "-mstackrealign", # SAFE_FFLAGS / Windows EOPTS
                                              "-m32", # BRugs
                                              "-m64", # RcppParallel
                                              "-multiply_defined" # macOS
