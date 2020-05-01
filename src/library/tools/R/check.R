@@ -6529,7 +6529,12 @@ add_dummies <- function(dir, Log)
                           "Rdlatex.log",
                           "R_check_bin",
                           "build_vignettes.log",
-                          "tests", "vign_test"))
+                          "vign_test",
+                          if(this_multiarch) {
+                              c(paste0("examples_", inst_archs),
+                                paste0(pkgname, "-Ex_", inst_archs, ".Rout"),
+                                paste0("tests_", inst_archs))
+                          } else "tests"))
             ## Examples calling dev.new() give files Rplots*.pdf,
             ## building vignettes give *.log files: be nice ...
             things <- things[!grepl("^Rplots.*[.]pdf$|[.]log$", things)]
