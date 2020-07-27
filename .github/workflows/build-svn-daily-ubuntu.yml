@@ -41,14 +41,14 @@ jobs:
     - name: Build
       run: make
 
-    - name: Check
-      run: make check-all
-      env:
-        PDFLATEX: ${{ env.dummy }}
-
-    - name: Print failed tests
-      if: failure()
-      run: tail -n100 tests/*.fail
+#    - name: Check
+#      run: make check-all
+#      env:
+#        PDFLATEX: ${{ env.dummy }}
+#
+#    - name: Print failed tests
+#      if: failure()
+#      run: tail -n100 tests/*.fail
 
     - name: Pack
       run: |
