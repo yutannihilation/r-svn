@@ -1,0 +1,42 @@
+on: [push, pull_request]
+
+name: Build from SVN
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ${{matrix.OS}}
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      R_CRAN_WEB: "https://cran.rstudio.com"
+      CRAN_RSYNC: 'mirrors.nic.cz::CRAN'
+    strategy:
+      fail-fast: false
+      matrix:
+        CC: [ gcc ]
+        OS: [ ubuntu-16.04, ubuntu-18.04 ]
+    steps:
+    - name: System dependencies
+      run: |
+        set -e
+        apt-get update -y
+        apt-get install -y ${{matrix.CC}} wget locales git rsync gfortran xvfb autoconf pkg-config texinfo texlive-latex-extra texlive-fonts-recommended tk8.6-dev \
+        libcurl4-openssl-dev libblas-dev libbz2-dev libicu-dev libjpeg-dev liblapack-dev liblzma-dev libncurses5-dev libpcre2-dev libpng-dev libreadline-dev
+        localedef -i en_US -f UTF-8 en_US.UTF-8
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 100
+
+    - name: Prepare
+      run: |
+        sed -i.bak 's|$(GIT) svn info|./.github/workflows/svn-info.sh|' Makefile.in
+        ./.github/workflows/wget-recommended.sh
+        ./.github/workflows/svn-info.sh
+
+    - name: Configure
+      run: CC=${{matrix.CC}} ./configure --enable-R-shlib --with-blas --with-lapack --disable-java
+
+    - name: Build
+      run: make
