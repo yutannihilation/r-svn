@@ -36,7 +36,9 @@ jobs:
         ./.github/workflows/svn-info.sh
 
     - name: Configure
-      run: CC=${{matrix.CC}} ./configure --enable-R-shlib --with-blas --with-lapack --disable-java
+      run: |
+        mkdir $(pwd)/R-devel
+        CC=${{matrix.CC}} ./configure --enable-R-shlib --with-blas --with-lapack --disable-java --prefix=$(pwd)/R-devel
 
     - name: Build
       run: make
@@ -52,8 +54,7 @@ jobs:
 
     - name: Pack
       run: |
-        mkdir ./R-devel
-        make DESTDIR=./R-devel install
+        make install
         tar -c -J -f R-devel.tar.xz ./R-devel
 
     - name: Create Release
